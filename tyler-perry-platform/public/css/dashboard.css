@@ -1,0 +1,86 @@
+/* ============================================================
+   TYLER PERRY — Admin Dashboard Styles
+   ============================================================ */
+
+body.dashboard { background: #080808; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; }
+
+/* 1. Hide scrollbars for clean mobile view */
+::-webkit-scrollbar { display: none; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* 2. Secure Login Gate */
+.login-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #1a1712, #080808 60%);
+  padding: 20px;
+}
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: #121212;
+  border: 1px solid #C9A45C;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.8), inset 0 1px 0 rgba(228, 201, 138, 0.1);
+  text-align: center;
+}
+.login-card h1 { color: #E4C98A; font-size: 2rem; margin-top: 0; margin-bottom: 10px; letter-spacing: 2px; }
+.login-card p { color: #B8B8B8; font-size: 0.9rem; margin-bottom: 30px; }
+.login-card label { display: block; text-align: left; color: #E4C98A; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; margin-top: 20px; }
+.login-card input {
+  width: 100%;
+  padding: 15px;
+  background: #080808;
+  border: 1px solid #292929;
+  border-radius: 6px;
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+  letter-spacing: 10px;
+  transition: 0.3s;
+  box-sizing: border-box;
+}
+.login-card input:focus { outline: none; border-color: #C9A45C; box-shadow: 0 0 10px rgba(201, 164, 92, 0.2); }
+.login-card button { width: 100%; margin-top: 30px; padding: 16px; font-size: 1rem; font-weight: bold; letter-spacing: 1px; }
+.error-msg { color: #F44336; font-size: 0.9rem; margin-top: 15px; display: none; }
+
+/* 3. Dashboard Layout */
+.dash-shell { display: flex; min-height: 100vh; }
+.dash-side { width: 250px; background: #0f0f0f; border-right: 1px solid #292929; padding: 24px 0; display: flex; flex-direction: column; }
+.dash-side button, .dash-side a { display: block; padding: 12px 24px; color: #B8B8B8; font-size: 0.9rem; text-decoration: none; transition: 0.3s; border: none; background: none; text-align: left; cursor: pointer; width: 100%; box-sizing: border-box; }
+.dash-side button:hover, .dash-side button.active, .dash-side a:hover { color: #E4C98A; background: #151515; border-left: 3px solid #C9A45C; }
+.dash-main { flex: 1; padding: 40px; }
+.dash-main h1 { font-size: 1.8rem; margin-top: 0; color: #E4C98A; }
+
+/* 4. Payment Cards */
+.payment-card { background: #121212; border: 1px solid #292929; padding: 20px; border-radius: 6px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.payment-info { flex: 1; min-width: 250px; }
+.payment-info h3 { margin: 0 0 8px; color: #E4C98A; font-size: 1.2rem; }
+.payment-info p { margin: 4px 0; color: #B8B8B8; font-size: 0.9rem; }
+.payment-img { max-width: 150px; border-radius: 4px; border: 1px solid #444; cursor: pointer; transition: 0.3s; }
+.payment-img:hover { border-color: #C9A45C; transform: scale(1.05); }
+.status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+.status-pending { background: #FFC107; color: #000; }
+.status-approved { background: #4CAF50; color: #fff; }
+.status-rejected { background: #F44336; color: #fff; }
+.actions { display: flex; gap: 10px; }
+.btn-approve { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.btn-reject { background: #F44336; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+/* 5. Admin Forms */
+.admin-form { background: #121212; padding: 30px; border-radius: 8px; border: 1px solid #292929; max-width: 600px; margin-bottom: 30px; }
+.admin-form label { display: block; color: #E4C98A; margin-bottom: 10px; font-weight: bold; font-size: 0.9rem; }
+.admin-form input, .admin-form select, .admin-form textarea { width: 100%; padding: 12px; background: #080808; color: white; border: 1px solid #444; border-radius: 4px; margin-bottom: 20px; box-sizing: border-box; font-family: inherit; }
+.admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus { outline: none; border-color: #C9A45C; }
+
+/* 6. Responsive Dashboard */
+@media (max-width: 768px) {
+  .dash-shell { flex-direction: column; }
+  .dash-side { width: 100%; border-right: none; border-bottom: 1px solid #292929; flex-direction: row; overflow-x: auto; padding: 0; }
+  .dash-side button, .dash-side a { padding: 15px; white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; }
+  .dash-side button.active { border-left: none; border-bottom: 3px solid #C9A45C; }
+  .dash-main { padding: 20px; }
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tyler Perry — Login</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html"><span class="brand-mark">TP</span><span class="brand-name">TYLER PERRY</span></a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a class="btn-login" href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <div style="max-width: 400px; margin: 60px auto; background: var(--bg-2); padding: 30px; border: 1px solid var(--border); border-radius: 6px;">
+      <h1 class="section-title" style="text-align:center; font-size: 1.8rem;">Sign In</h1>
+      <form id="loginForm" style="display:flex; flex-direction:column; gap:15px;">
+        <input type="email" id="email" placeholder="Email" required style="padding:12px; background:#0d0d0d; border:1px solid var(--border); color:white;">
+        <input type="password" id="password" placeholder="Password" required style="padding:12px; background:#0d0d0d; border:1px solid var(--border); color:white;">
+        <button type="submit" class="btn btn-gold" style="width:100%;">LOGIN</button>
+      </form>
+      <p style="text-align:center; margin-top:20px; font-size:0.8rem;">
+        <a href="register.html" style="color: var(--gold-2);">Create an account</a>
+      </p>
+    </div>
+  </main>
+  <script src="js/auth.js"></script>
+</body>
+</html>

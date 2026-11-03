@@ -1,0 +1,41 @@
+/* --- PREMIUM LOGO STYLES --- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+}
+
+.logo-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  /* Creates a subtle gold glow */
+  text-shadow: 0 0 15px rgba(201, 164, 92, 0.3);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.logo-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.logo-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.45em;
+  color: var(--gold-2);
+  margin-top: 2px;
+}
