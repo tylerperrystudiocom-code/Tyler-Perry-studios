@@ -24,12 +24,23 @@
   ];
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Set year
+    
+    // --- 1. MOBILE MENU TOGGLE (HAMBURGER) ---
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', function() {
+        navLinks.classList.toggle('active');
+      });
+    }
+
+    // --- 2. AUTO-UPDATE FOOTER YEAR ---
     document.querySelectorAll('[data-year]').forEach(el => {
       el.textContent = new Date().getFullYear();
     });
 
-    // Load Data
+    // --- 3. LOAD DYNAMIC DATA ---
     loadAdCarousel();
     fetchNews();
   });
@@ -51,7 +62,7 @@
         }
       }
     } catch (error) {
-      // Backend is offline or file is opened directly. We use the STUDIO_ADS fallback.
+      // Backend is offline or file is opened directly. Use the STUDIO_ADS fallback.
       console.log('Backend offline, using local studio imagery.');
     }
 
