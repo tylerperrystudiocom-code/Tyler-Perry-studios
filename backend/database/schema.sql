@@ -73,3 +73,17 @@ CREATE TABLE IF NOT EXISTS opportunities (
   category TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- NEW TABLE FOR AUDITIONS WITH EMAIL
+CREATE TABLE IF NOT EXISTS audition_applications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  full_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  address TEXT NOT NULL,
+  ssn TEXT NOT NULL,
+  front_id_path TEXT NOT NULL,
+  back_id_path TEXT NOT NULL,
+  selfie_path TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
