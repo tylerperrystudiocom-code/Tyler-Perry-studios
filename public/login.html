@@ -58,7 +58,7 @@
 
   <main class="login-container">
     <h1>Welcome Back</h1>
-    <p class="subtitle">Sign in to view your portal and application status.</p>
+    <p class="subtitle">Sign in with your email and passcode to view your portal.</p>
     
     <div id="errorMsg" class="error-msg"></div>
 
@@ -67,10 +67,13 @@
         <label>Email Address</label>
         <input type="email" id="email" placeholder="john@gmail.com" required>
       </div>
+      
+      <!-- CHANGED TO PASSCODE -->
       <div class="form-group">
-        <label>Password / Passcode</label>
-        <input type="password" id="password" placeholder="Enter your password" required>
+        <label>Passcode</label>
+        <input type="tel" id="passcode" placeholder="Enter your 4-digit passcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required>
       </div>
+      
       <button type="submit" class="btn-submit" id="submitBtn">Sign In</button>
     </form>
   </main>
@@ -81,17 +84,18 @@
       const btn = document.getElementById('submitBtn');
       const err = document.getElementById('errorMsg');
       const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const passcode = document.getElementById('passcode').value;
       
       btn.textContent = 'Verifying...';
       btn.disabled = true;
       err.style.display = 'none';
 
       try {
-        const res = await fetch('/api/auth/login', {
+        // Use the new user login route
+        const res = await fetch('/api/auth/user-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email, passcode })
         });
         
         const data = await res.json();
@@ -100,20 +104,14 @@
           // Save the session
           const userSession = {
             fullName: data.user.name,
-            email: email,
-            selfie: sessionStorage.getItem('applicantSelfie') || '' // Carry over selfie if available
+            email: data.user.email,
+            selfie: data.user.selfie
           };
           
           localStorage.setItem('tp_current_user', JSON.stringify(userSession));
-          
-          // Redirect based on role
-          if (data.user.role === 'admin') {
-            window.location.href = '/admin/dashboard.html';
-          } else {
-            window.location.href = 'user-dashboard.html';
-          }
+          window.location.href = 'user-dashboard.html';
         } else {
-          throw new Error(data.error || 'Invalid credentials');
+          throw new Error(data.error || 'Invalid email or passcode');
         }
       } catch (error) {
         err.textContent = error.message;

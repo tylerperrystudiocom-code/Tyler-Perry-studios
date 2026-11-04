@@ -82,9 +82,8 @@
     /* FOOTER */
     .site-footer { border-top: 1px solid var(--border); padding: 30px 20px; text-align: center; color: var(--text-2); font-size: 0.85rem; margin-top: 40px; }
 
-    /* MOBILE RESPONSIVE */
+    /* MOBILE RESPONSIVE (FIXED HAMBURGER) */
     @media (max-width: 900px) {
-      /* Hide menu by default */
       .nav-links { 
         display: none; 
         flex-direction: column;
@@ -100,7 +99,6 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.9);
       }
       
-      /* Force display when active */
       .nav-links.active {
         display: flex !important;
       }
@@ -140,7 +138,6 @@
         <a class="btn-login" href="login.html" id="authBtn">Login</a>
       </nav>
       
-      <!-- The button is explicitly set to type="button" -->
       <button class="hamburger" id="hamburger" type="button">
         <span></span><span></span><span></span>
       </button>
@@ -166,7 +163,7 @@
         <h2 class="section-title">Studio Sponsorships</h2>
       </div>
       <div id="adCarousel" class="ad-carousel">
-        <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-2);">Loading active campaigns...</div>
+        <!-- Content will be injected by the inline script below -->
       </div>
     </section>
 
@@ -218,15 +215,49 @@
     <p>&copy; 2026 Tyler Perry Platform. All rights reserved.</p>
   </footer>
 
-  <!-- ONLY THE INLINE SCRIPT. NO EXTERNAL FILES. -->
+  <!-- BULLETPROOF SCRIPT BUILT DIRECTLY INTO THE PAGE -->
   <script>
-    document.getElementById('hamburger').addEventListener('click', function(e) {
-      e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // 1. HAMBURGER MENU
+      var btn = document.getElementById('hamburger');
       var nav = document.getElementById('navLinks');
-      if (nav.classList.contains('active')) {
-        nav.classList.remove('active');
-      } else {
-        nav.classList.add('active');
+      if (btn && nav) {
+        btn.onclick = function(e) {
+          e.preventDefault();
+          nav.classList.toggle('active');
+        };
+      }
+
+      // 2. AD CAROUSEL
+      var ads = [
+        { title: 'Tyler Perry Studios', description: 'The historic Fort McPherson campus.', image_url: 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=1600&auto=format&fit=crop', link_url: 'about.html' },
+        { title: 'Sound Stages', description: '12 purpose-built sound stages.', image_url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1600&auto=format&fit=crop', link_url: 'gallery.html' },
+        { title: 'Production Backlot', description: 'Over 200 acres of greenspace.', image_url: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1600&auto=format&fit=crop', link_url: 'gallery.html' }
+      ];
+
+      var container = document.getElementById('adCarousel');
+      if (container) {
+        container.innerHTML = ads.map(function(ad, index) {
+          return '<div class="ad-slide ' + (index === 0 ? 'active' : '') + '" style="background-image: url(\'' + ad.image_url + '\');">' +
+            '<div class="ad-slide-content">' +
+              '<h3>' + ad.title + '</h3>' +
+              '<p>' + ad.description + '</p>' +
+              (ad.link_url ? '<a href="' + ad.link_url + '" class="btn btn-gold" style="padding: 10px 20px; font-size: 0.7rem; margin-top: 10px;">DISCOVER</a>' : '') +
+            '</div>' +
+          '</div>';
+        }).join('');
+
+        // Rotate slides
+        var slides = document.querySelectorAll('.ad-slide');
+        if (slides.length > 1) {
+          var current = 0;
+          setInterval(function() {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+          }, 4000);
+        }
       }
     });
   </script>
