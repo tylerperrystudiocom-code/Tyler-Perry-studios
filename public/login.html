@@ -68,7 +68,7 @@
         <input type="email" id="email" placeholder="john@gmail.com" required>
       </div>
       
-      <!-- CHANGED TO PASSCODE -->
+      <!-- PASSCODE BOX ADDED HERE -->
       <div class="form-group">
         <label>Passcode</label>
         <input type="tel" id="passcode" placeholder="Enter your 4-digit passcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required>
@@ -91,7 +91,7 @@
       err.style.display = 'none';
 
       try {
-        // Use the new user login route
+        // Uses the new user-login route
         const res = await fetch('/api/auth/user-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
