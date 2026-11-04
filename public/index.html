@@ -34,7 +34,7 @@
     .nav-links a:hover, .nav-links a.active { color: var(--gold-2); }
     .btn-login { border: 1px solid var(--gold); padding: 8px 20px; border-radius: 4px; color: var(--gold-2) !important; }
     
-    .hamburger { display: none; background: none; border: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; z-index: 1001; }
+    .hamburger { display: none; background: none; border: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; }
     .hamburger span { display: block; width: 25px; height: 2px; background: var(--gold-2); transition: 0.3s; }
 
     /* HERO */
@@ -56,17 +56,11 @@
     .section-eyebrow { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 10px; }
     .section-title { font-family: var(--font-display); font-size: 2.4rem; font-weight: 600; }
     
-    .ad-carousel { 
-      position: relative; width: 100%; height: 400px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-    }
-    .ad-slide { 
-      position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease-in-out; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; 
-    }
+    .ad-carousel { position: relative; width: 100%; height: 400px; background: #0a0a0a; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    .ad-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease-in-out; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; }
     .ad-slide.active { opacity: 1; z-index: 10; }
     .ad-slide::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.95), transparent, rgba(8,8,8,0.6)); }
-    .ad-slide-content { 
-      position: relative; z-index: 2; text-align: center; background: rgba(8, 8, 8, 0.7); padding: 40px; border-radius: 8px; border: 1px solid rgba(201, 164, 92, 0.3); backdrop-filter: blur(5px); max-width: 80%; 
-    }
+    .ad-slide-content { position: relative; z-index: 2; text-align: center; background: rgba(8, 8, 8, 0.7); padding: 40px; border-radius: 8px; border: 1px solid rgba(201, 164, 92, 0.3); backdrop-filter: blur(5px); max-width: 80%; }
     .ad-slide h3 { color: var(--gold-2); font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 15px; }
     .ad-slide p { color: #fff; font-size: 1.1rem; }
 
@@ -90,30 +84,25 @@
 
     /* MOBILE RESPONSIVE */
     @media (max-width: 900px) {
+      /* Hide menu by default */
       .nav-links { 
-        display: flex; 
+        display: none; 
         flex-direction: column;
         position: absolute;
         top: 75px;
         left: 0;
         right: 0;
-        background: #080808;
+        background: #0a0a0a;
         border-bottom: 1px solid var(--border);
         padding: 20px;
         text-align: center;
-        /* Hide by default */
-        opacity: 0;
-        pointer-events: none;
-        transform: translateY(-10px);
-        transition: 0.3s ease;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+        z-index: 999;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.9);
       }
       
-      /* Show when active */
+      /* Force display when active */
       .nav-links.active {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0);
+        display: flex !important;
       }
 
       .hamburger { display: flex; }
@@ -130,8 +119,7 @@
 
   <header class="site-header">
     <div class="nav">
-      <!-- SECRET SHORTCUT -->
-      <a class="brand" id="secretLogo" href="index.html">
+      <a class="brand" href="index.html">
         <span class="logo-mark">T</span>
         <span class="logo-text">
           <span class="logo-title">TYLER PERRY</span>
@@ -152,7 +140,8 @@
         <a class="btn-login" href="login.html" id="authBtn">Login</a>
       </nav>
       
-      <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+      <!-- The button is explicitly set to type="button" -->
+      <button class="hamburger" id="hamburger" type="button">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -229,39 +218,16 @@
     <p>&copy; 2026 Tyler Perry Platform. All rights reserved.</p>
   </footer>
 
-  <!-- SCRIPTS -->
-  <script src="js/main.js"></script>
+  <!-- ONLY THE INLINE SCRIPT. NO EXTERNAL FILES. -->
   <script>
-    // --- SECRET ADMIN LOGIC ---
-    let logoClickCount = 0;
-    let logoTimer = null;
-    const secretLogo = document.getElementById('secretLogo');
-
-    secretLogo.addEventListener('click', function(e) {
+    document.getElementById('hamburger').addEventListener('click', function(e) {
       e.preventDefault();
-      logoClickCount++;
-
-      if (logoClickCount >= 5) {
-        window.location.href = '/admin/dashboard.html';
-        logoClickCount = 0;
-        return;
+      var nav = document.getElementById('navLinks');
+      if (nav.classList.contains('active')) {
+        nav.classList.remove('active');
+      } else {
+        nav.classList.add('active');
       }
-
-      clearTimeout(logoTimer);
-      logoTimer = setTimeout(() => {
-        logoClickCount = 0;
-        if (logoClickCount === 1) {
-           window.location.href = 'index.html';
-        }
-      }, 3000);
-    });
-
-    // --- HAMBURGER MENU LOGIC ---
-    const hamburgerBtn = document.getElementById('hamburger');
-    const navMenu = document.getElementById('navLinks');
-
-    hamburgerBtn.addEventListener('click', function() {
-      navMenu.classList.toggle('active');
     });
   </script>
 </body>
