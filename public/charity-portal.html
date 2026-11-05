@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tyler Perry — Charity Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #080808; --bg-2: #121212; --gold: #C9A45C; --gold-2: #E4C98A; --text: #FFFFFF; --text-2: #B8B8B8; --border: #292929; --font-display: 'Cormorant Garamond', serif; --font-body: 'Inter', sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    
+    .site-header { position: fixed; top: 0; left: 0; right: 0; background: rgba(8, 8, 8, 0.95); border-bottom: 1px solid var(--border); z-index: 1000; }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 75px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo-mark { font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; color: var(--gold); }
+    
+    .section { padding: 120px 20px 60px; max-width: 800px; margin: 0 auto; }
+    h1 { font-family: var(--font-display); font-size: 3rem; color: var(--gold-2); margin-bottom: 10px; }
+    
+    .portal-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-top: 30px; }
+    .profile-sidebar { background: var(--bg-2); border: 1px solid var(--border); padding: 30px; border-radius: 12px; text-align: center; }
+    .profile-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold); margin-bottom: 15px; }
+    .profile-name { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; color: white; }
+    
+    .portal-content { background: var(--bg-2); border: 1px solid var(--border); padding: 40px; border-radius: 12px; }
+    .portal-content h2 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 20px; color: var(--gold-2); }
+    
+    .register-box { background: #080808; border: 1px solid var(--gold); padding: 20px; border-radius: 8px; margin-top: 20px; }
+    .register-box h3 { color: white; margin-bottom: 10px; font-size: 1.2rem; }
+    .register-box p { color: var(--text-2); font-size: 0.9rem; margin-bottom: 20px; }
+    
+    .btn-register { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: #080808; border: none; border-radius: 4px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+    .btn-register:hover { filter: brightness(1.1); }
+    
+    .success-msg { display: none; color: #4CAF50; margin-top: 15px; text-align: center; font-weight: bold; }
+
+    @media (max-width: 768px) {
+      .portal-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav">
+      <a class="brand" href="index.html">
+        <span class="logo-mark">T</span>
+        <span style="font-family: var(--font-display); letter-spacing: 0.2em; font-weight: 600;">TYLER PERRY</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="section">
+    <h1>Charity Portal</h1>
+    <p style="color: var(--text-2);">Welcome to your active charity dashboard.</p>
+
+    <div class="portal-grid">
+      <div class="profile-sidebar">
+        <img id="portalSelfie" src="" class="profile-img">
+        <div class="profile-name" id="portalName">User Name</div>
+        <div style="color: #4CAF50; font-size: 0.8rem; text-transform: uppercase; margin-top: 5px;">Approved & Active</div>
+      </div>
+
+      <div class="portal-content">
+        <h2>Daily Registration</h2>
+        <p style="color: var(--text-2); margin-bottom: 20px;">You must mark yourself as active everyday to let the charity coordinators know you are ready to work.</p>
+        
+        <div class="register-box">
+          <h3>Mark Attendance</h3>
+          <p>Click the button below to register your availability for today.</p>
+          <button class="btn-register" id="registerBtn" onclick="registerAttendance()">Register for Today</button>
+          <div id="successMsg" class="success-msg">✓ Successfully registered for today!</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Use sessionStorage so they are logged out if they close the browser
+    const userData = JSON.parse(sessionStorage.getItem('tp_current_user'));
+    
+    if (!userData) {
+      // If no session exists, force login
+      window.location.href = 'login.html';
+    } else {
+      document.getElementById('portalName').textContent = userData.fullName;
+      if (userData.selfie) {
+        document.getElementById('portalSelfie').src = userData.selfie;
+      }
+    }
+
+    function registerAttendance() {
+      const btn = document.getElementById('registerBtn');
+      const msg = document.getElementById('successMsg');
+      
+      btn.textContent = 'Registering...';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        btn.style.display = 'none';
+        msg.style.display = 'block';
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

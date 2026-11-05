@@ -105,8 +105,6 @@
             <option value="advertisements">Advertisement (Banner)</option>
             <option value="gallery">Gallery Image</option>
             <option value="news">News Article</option>
-            <option value="events">Event</option>
-            <option value="opportunities">Casting Opportunity</option>
           </select>
 
           <label>Title / Headline</label>
@@ -147,17 +145,15 @@
       err.style.display = 'none';
 
       try {
-        // Try to reach the server
         const res = await fetch(`${API_BASE}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: 'admin@tylerperry.com', password: passcode })
         });
         
-        if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
         
-        if (data.user && data.user.role === 'admin') {
+        if (res.ok && data.user.role === 'admin') {
           localStorage.setItem('tp_admin_token', data.token);
           authToken = data.token;
           loginGate.style.display = 'none';
@@ -167,35 +163,15 @@
           throw new Error('Incorrect passcode.');
         }
       } catch (error) {
-        // FALLBACK: If the server is offline or unreachable on Render, 
-        // and the passcode entered is 1012, let them into the dashboard.
-        if (passcode === '1012') {
-          localStorage.setItem('tp_admin_token', 'offline-demo-token');
-          authToken = 'offline-demo-token';
-          loginGate.style.display = 'none';
-          dashboardScreen.style.display = 'flex';
-          // Show an alert that data won't load
-          setTimeout(() => alert("Backend server unreachable. You are in Offline Mode. Data will not load until the server is running."), 500);
-          loadPayments(); // This will fail gracefully
-        } else {
-          err.textContent = 'Load failed. Server unreachable or incorrect passcode.';
-          err.style.display = 'block';
-          btn.textContent = 'UNLOCK DASHBOARD';
-          btn.disabled = false;
-          document.getElementById('adminPasscode').value = '';
-        }
+        err.textContent = 'Failed to connect. Please try again.';
+        err.style.display = 'block';
+        btn.textContent = 'UNLOCK DASHBOARD';
+        btn.disabled = false;
+        document.getElementById('adminPasscode').value = '';
       }
     });
 
     async function verifySession(token) {
-      // If it's the offline demo token, just show the dashboard immediately
-      if (token === 'offline-demo-token') {
-        loginGate.style.display = 'none';
-        dashboardScreen.style.display = 'flex';
-        loadPayments();
-        return;
-      }
-
       try {
         const res = await fetch(`${API_BASE}/admin/payments`, { headers: { 'Authorization': `Bearer ${token}` } });
         if (res.ok) {

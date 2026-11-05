@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tyler Perry — Application Pending</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #080808; --bg-2: #121212; --gold: #C9A45C; --gold-2: #E4C98A; --text: #FFFFFF; --text-2: #B8B8B8; --border: #292929; --font-display: 'Cormorant Garamond', serif; --font-body: 'Inter', sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    
+    .section { padding: 120px 20px 60px; max-width: 600px; margin: 0 auto; text-align: center; }
+    .success-check { font-size: 4rem; color: #4CAF50; margin-bottom: 20px; }
+    h1 { font-family: var(--font-display); font-size: 2.8rem; margin-bottom: 10px; }
+    p.subtitle { color: var(--text-2); margin-bottom: 40px; }
+
+    .status-card { background: var(--bg-2); border: 1px solid var(--gold); border-radius: 12px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); margin-bottom: 40px; }
+    .status-icon { font-size: 3rem; margin-bottom: 15px; }
+    .status-title { font-family: var(--font-display); font-size: 1.8rem; color: var(--gold-2); margin-bottom: 10px; }
+    .status-text { color: var(--text-2); font-size: 1rem; }
+    
+    .btn-home { display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: #080808; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+  <main class="section">
+    <div class="success-check">✓</div>
+    <h1>Charity Job Application Received</h1>
+    <p class="subtitle">Your profile has been securely submitted to the administration.</p>
+
+    <div class="status-card">
+      <div class="status-icon">⏳</div>
+      <div class="status-title">Pending Admin Approval</div>
+      <p class="status-text">Our team is currently reviewing your documents. Once approved, your Charity Portal will be unlocked.</p>
+    </div>
+
+    <a href="index.html" class="btn-home">Return to Homepage</a>
+  </main>
+</body>
+</html>

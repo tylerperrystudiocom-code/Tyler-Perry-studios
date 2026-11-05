@@ -14,10 +14,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.SESSION_SECRET || 'fallback-secret-change-me';
 
-// 1. Initialize Database
+// 1. Initialize Database Base Tables
 initDb();
 
-// 2. Setup File Uploads
+// 2. SAFE MIGRATION: Add passcode column if it doesn't exist yet
+try {
+  db.exec("ALTER TABLE audition_applications ADD COLUMN passcode TEXT NOT NULL DEFAULT '0000'");
+} catch (e) {
+  // Column already exists. Safe to ignore.
+}
+
+// 3. Setup File Uploads
 const uploadDir = path.join(__dirname, '..', 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
@@ -27,7 +34,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
-// 3. Middleware
+// 4. Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(express.json());
@@ -36,7 +43,7 @@ app.use('/', express.static(path.join(__dirname, '..', 'public')));
 app.use('/admin', express.static(path.join(__dirname, '..', 'admin')));
 app.use('/uploads', express.static(uploadDir));
 
-// 4. Auth Middleware
+// 5. Auth Middleware
 const requireAuth = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
@@ -51,16 +58,17 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// --- ADMIN LOGIN ROUTE (Hardcoded Passcode 1012) ---
+// --- ADMIN LOGIN (Passcode 1012) ---
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
   
-  // Special Admin login bypass
+  // Hardcoded admin bypass
   if (email === 'admin@tylerperry.com' && password === '1012') {
     const token = jwt.sign({ id: 1, role: 'admin', name: 'System Administrator' }, JWT_SECRET, { expiresIn: '24h' });
     return res.json({ token, user: { id: 1, name: 'System Administrator', role: 'admin' } });
   }
   
+  // Database login for regular users
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   if (!user || !(await bcrypt.compare(password, user.password_hash))) {
     return res.status(401).json({ error: 'Invalid credentials' });
@@ -70,12 +78,10 @@ app.post('/api/auth/login', async (req, res) => {
   res.json({ token, user: { id: user.id, name: user.full_name, role: user.role } });
 });
 
-// --- USER LOGIN ROUTE (Email + 4-Digit Passcode) ---
+// --- USER LOGIN (Email + Passcode) ---
 app.post('/api/auth/user-login', (req, res) => {
   try {
     const { email, passcode } = req.body;
-    
-    // Look up the user in the applications table
     const applicant = db.prepare('SELECT * FROM audition_applications WHERE email = ? AND passcode = ?').get(email, passcode);
     
     if (!applicant) {
@@ -83,15 +89,7 @@ app.post('/api/auth/user-login', (req, res) => {
     }
     
     const token = jwt.sign({ id: applicant.id, role: 'applicant', name: applicant.full_name }, JWT_SECRET, { expiresIn: '24h' });
-    res.json({
-      success: true,
-      token,
-      user: {
-        name: applicant.full_name,
-        email: applicant.email,
-        selfie: applicant.selfie_path
-      }
-    });
+    res.json({ success: true, token, user: { name: applicant.full_name, email: applicant.email, selfie: applicant.selfie_path } });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
@@ -149,7 +147,7 @@ app.post('/api/admin/applications/:id/approve', requireAuth, requireAdmin, (req,
   } catch (err) { res.status(500).json({ error: 'Failed' }); }
 });
 
-// --- PAYMENTS & CONTENT ---
+// --- ADMIN: PAYMENTS ---
 app.get('/api/admin/payments', requireAuth, requireAdmin, (req, res) => {
   try {
     const payments = db.prepare(`SELECT p.*, u.full_name, u.email FROM payments p JOIN users u ON p.user_id = u.id ORDER BY p.created_at DESC`).all();
@@ -157,6 +155,7 @@ app.get('/api/admin/payments', requireAuth, requireAdmin, (req, res) => {
   } catch (err) { res.status(500).json({ error: 'Failed' }); }
 });
 
+// --- ADMIN: CONTENT UPLOAD ---
 app.post('/api/admin/:type', requireAuth, requireAdmin, upload.single('image'), (req, res) => {
   const { type } = req.params;
   const { title, description } = req.body;
@@ -177,4 +176,4 @@ app.post('/api/admin/:type', requireAuth, requireAdmin, upload.single('image'), 
 });
 
 // Start Server
-app.listen(PORT, () => console.log(`🚀 Real Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

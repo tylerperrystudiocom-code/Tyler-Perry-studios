@@ -20,7 +20,6 @@
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; display: block; }
 
-    /* NAVIGATION */
     .site-header { position: fixed; top: 0; left: 0; right: 0; background: rgba(8, 8, 8, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; }
     .nav { display: flex; align-items: center; justify-content: space-between; height: 75px; max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; }
     .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
@@ -37,7 +36,6 @@
     .hamburger { display: none; background: none; border: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; }
     .hamburger span { display: block; width: 25px; height: 2px; background: var(--gold-2); transition: 0.3s; }
 
-    /* HERO */
     .hero { min-height: 85vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 120px 20px 60px; background: radial-gradient(circle at center, #1a1712 0%, #080808 70%); position: relative; }
     .eyebrow { font-size: 0.8rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
     .hero h1 { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 5.5rem); font-weight: 600; line-height: 1.05; margin-bottom: 25px; }
@@ -50,7 +48,6 @@
     .btn-ghost { background: transparent; border: 1px solid var(--gold); color: var(--gold-2); }
     .btn-ghost:hover { background: rgba(201, 164, 92, 0.1); }
 
-    /* ADS */
     .section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
     .section-head { margin-bottom: 30px; }
     .section-eyebrow { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 10px; }
@@ -64,7 +61,6 @@
     .ad-slide h3 { color: var(--gold-2); font-family: var(--font-display); font-size: 2.2rem; margin-bottom: 15px; }
     .ad-slide p { color: #fff; font-size: 1.1rem; }
 
-    /* SCATTERED FEATURE CARDS */
     .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 30px; }
     .feature-card { position: relative; border-radius: 12px; overflow: hidden; min-height: 380px; display: flex; flex-direction: column; justify-content: flex-end; background-size: cover; background-position: center; border: 1px solid var(--border); transition: 0.4s; }
     .feature-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.95) 0%, rgba(8,8,8,0.6) 50%, transparent 100%); z-index: 1; transition: 0.4s; }
@@ -74,35 +70,19 @@
     .feature-content h3 { font-family: var(--font-display); color: var(--gold-2); font-size: 1.6rem; margin-bottom: 10px; }
     .feature-content p { color: #ddd; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
     .feature-content .btn-link { color: var(--gold); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+    
     .card-auditions { background-image: url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop'); }
+    /* NEW CHARITY BACKGROUND */
+    .card-charity { background-image: url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop'); }
     .card-gallery { background-image: url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=800&auto=format&fit=crop'); }
     .card-membership { background-image: url('https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=800&auto=format&fit=crop'); }
     .card-events { background-image: url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=800&auto=format&fit=crop'); }
 
-    /* FOOTER */
     .site-footer { border-top: 1px solid var(--border); padding: 30px 20px; text-align: center; color: var(--text-2); font-size: 0.85rem; margin-top: 40px; }
 
-    /* MOBILE RESPONSIVE (FIXED HAMBURGER) */
     @media (max-width: 900px) {
-      .nav-links { 
-        display: none; 
-        flex-direction: column;
-        position: absolute;
-        top: 75px;
-        left: 0;
-        right: 0;
-        background: #0a0a0a;
-        border-bottom: 1px solid var(--border);
-        padding: 20px;
-        text-align: center;
-        z-index: 999;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.9);
-      }
-      
-      .nav-links.active {
-        display: flex !important;
-      }
-
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 75px; left: 0; right: 0; background: #0a0a0a; border-bottom: 1px solid var(--border); padding: 20px; text-align: center; z-index: 999; box-shadow: 0 10px 20px rgba(0,0,0,0.9); }
+      .nav-links.active { display: flex !important; }
       .hamburger { display: flex; }
       .hero h1 { font-size: 3rem; }
       .hero-actions { flex-direction: column; width: 100%; }
@@ -117,13 +97,13 @@
 
   <header class="site-header">
     <div class="nav">
-      <a class="brand" href="index.html">
+      <div class="brand" id="secretLogo">
         <span class="logo-mark">T</span>
         <span class="logo-text">
           <span class="logo-title">TYLER PERRY</span>
           <span class="logo-sub">STUDIOS</span>
         </span>
-      </a>
+      </div>
       
       <nav class="nav-links" id="navLinks">
         <a href="index.html" class="active">Home</a>
@@ -162,9 +142,7 @@
         <span class="section-eyebrow">Featured Partners</span>
         <h2 class="section-title">Studio Sponsorships</h2>
       </div>
-      <div id="adCarousel" class="ad-carousel">
-        <!-- Content will be injected by the inline script below -->
-      </div>
+      <div id="adCarousel" class="ad-carousel"></div>
     </section>
 
     <section class="section">
@@ -181,6 +159,14 @@
             <h3>Auditions & Casting</h3>
             <p>Find open casting calls, submit your application, and track your progress directly with our casting directors.</p>
             <span class="btn-link">View Auditions →</span>
+          </div>
+        </a>
+        
+        <a href="charity-apply.html" class="feature-card card-charity">
+          <div class="feature-content">
+            <h3>Charity Jobs</h3>
+            <p>Join our charitable initiatives. Find open positions to support community programs and outreach.</p>
+            <span class="btn-link">Apply for Charity Job →</span>
           </div>
         </a>
         
@@ -215,11 +201,8 @@
     <p>&copy; 2026 Tyler Perry Platform. All rights reserved.</p>
   </footer>
 
-  <!-- BULLETPROOF SCRIPT BUILT DIRECTLY INTO THE PAGE -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      
-      // 1. HAMBURGER MENU
       var btn = document.getElementById('hamburger');
       var nav = document.getElementById('navLinks');
       if (btn && nav) {
@@ -229,7 +212,6 @@
         };
       }
 
-      // 2. AD CAROUSEL
       var ads = [
         { title: 'Tyler Perry Studios', description: 'The historic Fort McPherson campus.', image_url: 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=1600&auto=format&fit=crop', link_url: 'about.html' },
         { title: 'Sound Stages', description: '12 purpose-built sound stages.', image_url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1600&auto=format&fit=crop', link_url: 'gallery.html' },
@@ -248,7 +230,6 @@
           '</div>';
         }).join('');
 
-        // Rotate slides
         var slides = document.querySelectorAll('.ad-slide');
         if (slides.length > 1) {
           var current = 0;
@@ -258,6 +239,23 @@
             slides[current].classList.add('active');
           }, 4000);
         }
+      }
+
+      var logoClicks = 0;
+      var logoTimer;
+      var secretLogo = document.getElementById('secretLogo');
+      if (secretLogo) {
+        secretLogo.addEventListener('click', function(e) {
+          e.preventDefault();
+          logoClicks++;
+          if (logoClicks >= 5) {
+            window.location.href = '/admin/dashboard.html';
+            logoClicks = 0;
+          } else {
+            clearTimeout(logoTimer);
+            logoTimer = setTimeout(function() { logoClicks = 0; }, 2000);
+          }
+        });
       }
     });
   </script>
