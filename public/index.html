@@ -72,11 +72,19 @@
     .feature-content .btn-link { color: var(--gold); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
     
     .card-auditions { background-image: url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop'); }
-    /* NEW CHARITY BACKGROUND */
     .card-charity { background-image: url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop'); }
     .card-gallery { background-image: url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=800&auto=format&fit=crop'); }
     .card-membership { background-image: url('https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=800&auto=format&fit=crop'); }
     .card-events { background-image: url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=800&auto=format&fit=crop'); }
+
+    /* NEWS SECTION STYLES */
+    .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 30px; }
+    .news-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: 0.4s; }
+    .news-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+    .news-card img { width: 100%; height: 200px; object-fit: cover; }
+    .news-content { padding: 25px; }
+    .news-content h3 { font-family: var(--font-display); color: var(--gold-2); font-size: 1.4rem; margin-bottom: 10px; }
+    .news-content p { color: var(--text-2); font-size: 0.9rem; line-height: 1.6; }
 
     .site-footer { border-top: 1px solid var(--border); padding: 30px 20px; text-align: center; color: var(--text-2); font-size: 0.85rem; margin-top: 40px; }
 
@@ -137,12 +145,15 @@
       </div>
     </section>
 
+    <!-- DYNAMIC ADS SECTION -->
     <section class="section">
       <div class="section-head">
         <span class="section-eyebrow">Featured Partners</span>
         <h2 class="section-title">Studio Sponsorships</h2>
       </div>
-      <div id="adCarousel" class="ad-carousel"></div>
+      <div id="adCarousel" class="ad-carousel">
+        <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-2);">Loading campaigns...</div>
+      </div>
     </section>
 
     <section class="section">
@@ -195,6 +206,17 @@
         </a>
       </div>
     </section>
+
+    <!-- DYNAMIC NEWS SECTION -->
+    <section class="section">
+      <div class="section-head">
+        <span class="section-eyebrow">Latest Updates</span>
+        <h2 class="section-title">News & Announcements</h2>
+      </div>
+      <div id="newsGrid" class="news-grid">
+        <p style="color:var(--text-2);">Loading latest news...</p>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -203,6 +225,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // 1. HAMBURGER MENU
       var btn = document.getElementById('hamburger');
       var nav = document.getElementById('navLinks');
       if (btn && nav) {
@@ -212,35 +235,7 @@
         };
       }
 
-      var ads = [
-        { title: 'Tyler Perry Studios', description: 'The historic Fort McPherson campus.', image_url: 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=1600&auto=format&fit=crop', link_url: 'about.html' },
-        { title: 'Sound Stages', description: '12 purpose-built sound stages.', image_url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1600&auto=format&fit=crop', link_url: 'gallery.html' },
-        { title: 'Production Backlot', description: 'Over 200 acres of greenspace.', image_url: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1600&auto=format&fit=crop', link_url: 'gallery.html' }
-      ];
-
-      var container = document.getElementById('adCarousel');
-      if (container) {
-        container.innerHTML = ads.map(function(ad, index) {
-          return '<div class="ad-slide ' + (index === 0 ? 'active' : '') + '" style="background-image: url(\'' + ad.image_url + '\');">' +
-            '<div class="ad-slide-content">' +
-              '<h3>' + ad.title + '</h3>' +
-              '<p>' + ad.description + '</p>' +
-              (ad.link_url ? '<a href="' + ad.link_url + '" class="btn btn-gold" style="padding: 10px 20px; font-size: 0.7rem; margin-top: 10px;">DISCOVER</a>' : '') +
-            '</div>' +
-          '</div>';
-        }).join('');
-
-        var slides = document.querySelectorAll('.ad-slide');
-        if (slides.length > 1) {
-          var current = 0;
-          setInterval(function() {
-            slides[current].classList.remove('active');
-            current = (current + 1) % slides.length;
-            slides[current].classList.add('active');
-          }, 4000);
-        }
-      }
-
+      // 2. SECRET ADMIN 5-TAP LOGO LOGIC
       var logoClicks = 0;
       var logoTimer;
       var secretLogo = document.getElementById('secretLogo');
@@ -257,6 +252,74 @@
           }
         });
       }
+
+      // 3. FETCH AND DISPLAY DYNAMIC ADS
+      async function loadAds() {
+        const container = document.getElementById('adCarousel');
+        let fallbackAds = [
+          { title: 'Tyler Perry Studios', description: 'The historic Fort McPherson campus.', image_url: 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=1600&auto=format&fit=crop' },
+          { title: 'Sound Stages', description: '12 purpose-built sound stages.', image_url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=1600&auto=format&fit=crop' },
+          { title: 'Production Backlot', description: 'Over 200 acres of greenspace.', image_url: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=1600&auto=format&fit=crop' }
+        ];
+
+        try {
+          const res = await fetch('/api/data/advertisements');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.length > 0) fallbackAds = data;
+          }
+        } catch (e) { /* Use fallback if server is offline */ }
+
+        container.innerHTML = fallbackAds.map((ad, index) => `
+          <div class="ad-slide ${index === 0 ? 'active' : ''}" style="background-image: url('${ad.image_url}');">
+            <div class="ad-slide-content">
+              <h3>${ad.title}</h3>
+              <p>${ad.description || ''}</p>
+            </div>
+          </div>
+        `).join('');
+
+        var slides = document.querySelectorAll('.ad-slide');
+        if (slides.length > 1) {
+          var current = 0;
+          setInterval(function() {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+          }, 4000);
+        }
+      }
+
+      // 4. FETCH AND DISPLAY DYNAMIC NEWS
+      async function loadNews() {
+        const container = document.getElementById('newsGrid');
+        try {
+          const res = await fetch('/api/data/news');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.length > 0) {
+              container.innerHTML = data.map(item => `
+                <div class="news-card">
+                  ${item.image_url ? `<img src="${item.image_url}" alt="${item.title}">` : ''}
+                  <div class="news-content">
+                    <h3>${item.title}</h3>
+                    <p>${item.excerpt || ''}</p>
+                  </div>
+                </div>
+              `).join('');
+            } else {
+              container.innerHTML = '<p style="color:var(--text-2);">No news published yet. Check back soon.</p>';
+            }
+          } else {
+            throw new Error('No news');
+          }
+        } catch (e) {
+          container.innerHTML = '<p style="color:var(--text-2);">Unable to load news at this time.</p>';
+        }
+      }
+
+      loadAds();
+      loadNews();
     });
   </script>
 </body>
