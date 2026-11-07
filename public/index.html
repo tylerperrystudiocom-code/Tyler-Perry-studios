@@ -290,7 +290,7 @@
         }
       }
 
-      // 4. FETCH AND DISPLAY DYNAMIC NEWS
+      // 4. FETCH AND DISPLAY DYNAMIC NEWS (WITH 15S AUTO-REFRESH)
       async function loadNews() {
         const container = document.getElementById('newsGrid');
         try {
@@ -303,7 +303,7 @@
                   ${item.image_url ? `<img src="${item.image_url}" alt="${item.title}">` : ''}
                   <div class="news-content">
                     <h3>${item.title}</h3>
-                    <p>${item.excerpt || ''}</p>
+                    <p>${item.excerpt || item.content || ''}</p>
                   </div>
                 </div>
               `).join('');
@@ -318,8 +318,12 @@
         }
       }
 
+      // Initial Load
       loadAds();
       loadNews();
+
+      // AUTO-REFRESH NEWS EVERY 15 SECONDS
+      setInterval(loadNews, 15000);
     });
   </script>
 </body>

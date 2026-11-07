@@ -17,7 +17,7 @@ const JWT_SECRET = process.env.SESSION_SECRET || 'fallback-secret-change-me';
 // 1. Initialize Database
 initDb();
 
-// 2. PERMANENT BYPASS: Safely ensure all columns exist (will never crash)
+// 2. PERMANENT BYPASS: Safely ensure all columns exist
 const safeMigrations = [
   "ALTER TABLE audition_applications ADD COLUMN passcode TEXT NOT NULL DEFAULT '0000'",
   "ALTER TABLE news ADD COLUMN content TEXT",
@@ -157,10 +157,11 @@ app.get('/api/admin/payments', requireAuth, requireAdmin, (req, res) => {
   } catch (err) { res.status(500).json({ error: 'Failed' }); }
 });
 
-// --- ADMIN: CONTENT UPLOAD (PERMANENT FIX) ---
+// --- ADMIN: CONTENT UPLOAD (PERMANENT BYPASS) ---
 app.post('/api/admin/:type', requireAuth, requireAdmin, upload.single('image'), (req, res) => {
   const { type } = req.params;
-  const { title, description } = req.body;
+  const title = req.body.title || 'Untitled';
+  const description = req.body.description || req.body.excerpt || ''; // Catch both fields
   const image_url = req.file ? '/uploads/' + req.file.filename : null;
   
   try {
@@ -169,8 +170,8 @@ app.post('/api/admin/:type', requireAuth, requireAdmin, upload.single('image'), 
     } else if (type === 'gallery') {
       db.prepare('INSERT INTO gallery (title, image_url, category) VALUES (?, ?, ?)').run(title, image_url, 'General');
     } else if (type === 'news') {
-      // Use COALESCE to ensure no null errors
-      db.prepare('INSERT INTO news (title, excerpt, content, image_url) VALUES (?, ?, ?, ?)').run(title, description, description || ' ', image_url);
+      // Force the description into both excerpt and content to prevent null errors
+      db.prepare('INSERT INTO news (title, excerpt, content, image_url) VALUES (?, ?, ?, ?)').run(title, description, description, image_url);
     } else {
       return res.status(400).json({ error: 'Invalid content type' });
     }
