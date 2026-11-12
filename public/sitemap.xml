@@ -1,6 +1,11 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://tyler-perry-studios.onrender.com/</loc>
-  </url>
+  <url><loc>https://tyler-perry-studios.onrender.com/</loc><priority>1.0</priority></url>
+  <url><loc>https://tyler-perry-studios.onrender.com/about.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tyler-perry-studios.onrender.com/auditions.html</loc><priority>0.9</priority></url>
+  <url><loc>https://tyler-perry-studios.onrender.com/membership.html</loc><priority>0.9</priority></url>
+  <url><loc>https://tyler-perry-studios.onrender.com/events.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tyler-perry-studios.onrender.com/gallery.html</loc><priority>0.7</priority></url>
+  <url><loc>https://tyler-perry-studios.onrender.com/news.html</loc><priority>0.8</priority></url>
+  <url><loc>https://tyler-perry-studios.onrender.com/contact.html</loc><priority>0.5</priority></url>
 </urlset>
